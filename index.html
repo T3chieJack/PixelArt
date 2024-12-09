@@ -1,0 +1,117 @@
+<html>
+  <title>PIXELS FIGHTING</title>
+
+  <head>
+    <meta property="og:image" content="http://fakeyou.libra.uberspace.de/Bild3.jpg">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="PIXELS FIGHTING">
+    <meta property="og:url" content="http://www.pixelsfighting.com">
+    <script type="text/javascript">
+      var canvas, ctx;
+      var width, height;
+      var size, step;
+      var Sum_1;
+      var color1 = Math.floor(Math.random() * 16777215).toString(16);
+      color1 = "#" + ("000000" + color1).slice(-6);
+      var color2 = Math.floor(Math.random() * 16777215).toString(16);
+      color2 = "#" + ("000000" + color2).slice(-6);
+
+      function setup() {
+        width = 500;
+        height = 500;
+        canvas = document.getElementById("scrawl");
+        ctx = canvas.getContext("2d");
+        size = 125;
+        step = 500 / size;
+        Sum_1 = 0;
+
+        initialize();
+        draw();
+      }
+
+      // Initialize Boards with a random state for uniqueness
+      function initialize() {
+        Old = new Array(size);
+        New = new Array(size);
+        Neigh = new Array(size);
+        Ratio1 = new Array(size);
+
+        for (i = 0; i < Old.length; ++i) {
+          Old[i] = new Array(size);
+          New[i] = new Array(size);
+          Neigh[i] = new Array(size);
+          Ratio1[i] = new Array(size);
+        }
+        for (i = 0; i < size; ++i) {
+          for (j = 0; j < size; ++j) {
+            Ratio1[i][j] = 0;
+            Neigh[i][j] = 8;
+            if (i === 0 || i === size - 1) {
+              Neigh[i][j] = 5;
+              if (j === 0 || j === size - 1) {
+                Neigh[i][j] = 3;
+              }
+            }
+            if (j === 0 || j === size - 1) {
+              Neigh[i][j] = 5;
+              if (i === 0 || i === size - 1) {
+                Neigh[i][j] = 3;
+              }
+            }
+
+            // Use random values to create unique starting points
+            Old[i][j] = Math.random() < 0.5 ? 1 : 0;
+            if (Old[i][j] === 1) {
+              Sum_1 += 1;
+            }
+            New[i][j] = Old[i][j];
+          }
+        }
+        Sum_1 = Sum_1 / (size * size);
+      }
+
+      function draw() {
+        for (i = 0; i < size; ++i) {
+          for (j = 0; j < size; ++j) {
+            ctx.fillStyle = color1;
+            if (Old[i][j] === 1) {
+              ctx.fillStyle = color2;
+            }
+            ctx.fillRect(i * step, j * step, step, step);
+          }
+        }
+      }
+
+      function downloadImage() {
+        // Create an anchor element to trigger the download
+        var link = document.createElement('a');
+        link.download = 'pixels_fighting.png';
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      }
+    </script>
+  </head>
+
+  <style>
+    body {}
+  </style>
+
+  <body onload="setup()">
+    <center>
+      <br>
+      <div style="width: 100%">
+        <span style="font-family: Arial Black, Gadget, sans-serif; font-size: 1.5em; color: black;">
+          PIXELS FIGHTING
+        </span>
+      </div>
+      <br><br>
+
+      <canvas id="scrawl" width="500" height="500"></canvas>
+      <br><br><br>
+
+      <button onclick="downloadImage()">Download Random Image</button>
+      <br><br>
+    </center>
+  </body>
+
+</html>
